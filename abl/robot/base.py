@@ -7,20 +7,18 @@ from __future__ import with_statement
 __docformat__ = "restructuredtext en"
 
 
+import sys
+import os
+import pprint
+import subprocess
 from cStringIO import StringIO
 import contextlib
 import inspect
 import logging
 import optparse
-import os
-import pprint
-import subprocess
-import sys
 from time import time
 from textwrap import dedent
 from socket import error as socket_error
-from urllib2 import urlopen
-import urllib
 
 from configobj import ConfigObj
 from validate import Validator
@@ -45,16 +43,8 @@ from abl.util import (
 from .mail import configure
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("abl.robot")
 
-current_robot = None
-
-BOOTSTRAP_LOGGING = False
-"""
-If this variable is True, our logger gets set a special
-handler appended to ensure there is output while trying
-to bootstrap the Robot.
-"""
 
 def nonose(func):
     func.__test__ = False
@@ -404,10 +394,6 @@ class Robot(object):
 
 
     def run(self):
-        # store global reference to currently running robot
-        # this allows the exception dumpers to add useful info
-        global current_robot
-        current_robot = self
         if self.opts.config_spec:
             self.print_config_spec()
             sys.exit(0)
@@ -427,22 +413,6 @@ class Robot(object):
             if self.RAISE_EXCEPTIONS:
                 raise
             self.error_handler.report_exception()
-        finally:
-            current_robot = None
-
-
-    def _get_context_info(self):
-        argv = sys.argv
-        pid = os.getpid()
-        prefix = sys.prefix
-        uname = " ".join(platform.uname())
-
-        params = {}
-        params.update(locals())
-        del params['self']
-        del params['params']
-        return pprint.pformat(params)
-
 
 
     def sendmail(self, subject, to, text=None, attachments=()):
@@ -471,9 +441,11 @@ class Robot(object):
         """
         Override this method to provide a logger instance.
 
-        Defaults to `abl.devtools.base` otherwise.
+        Defaults to `abl.robot` otherwise.
         """
+        # the global instance is bound to "abl.robot"
         return logger
+
 
 
     def add_options(self, parser):
@@ -516,7 +488,7 @@ class Robot(object):
         # If there is none, output an
         # emergency-log in EMERGENTY_LOG
         locations = []
-        for location in self.SEARCH_PATHS:  # "/etc", "etc"
+        for location in self.SEARCH_PATHS:
             if not location.startswith("/"):
                 location = os.path.join(sys.prefix, "etc")
             locations.append(location)
@@ -601,7 +573,6 @@ class Robot(object):
         # let's tell turbomail to be a little quieter
         logging.getLogger('turbomail').setLevel(logging.WARN)
 
-        self.logger = self.create_logger()
 
 
     def create_logger(self):

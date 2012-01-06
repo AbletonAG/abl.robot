@@ -228,14 +228,3 @@ class BasicRobotTests(RobotTestCase):
 
 
 
-
-    def _replace_urlopen(self):
-        self.call_list = []
-        def add_call(url):
-            self.call_list.append(url)
-        base.urlopen = add_call
-
-
-    def _reinstate_urlopen(self):
-        base.urlopen = urllib2.urlopen
-

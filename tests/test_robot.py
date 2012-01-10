@@ -23,23 +23,8 @@ from urllib import urlencode
 from abl.robot import Robot
 from abl.robot.test import RobotTestCase
 
-from turbomail.control import interface
 
 from abl.vpath.base import URI
-
-
-#------ set up mailer test code
-
-def get_messages():
-    if interface and interface.manager and interface.manager.transport: #@UndefinedVariable
-        # transport is only available after at least one mail has been sent
-        return interface.manager.transport.get_sent_mails() #@UndefinedVariable
-    else:
-        return []
-
-def clear_messages():
-    if interface and interface.manager and interface.manager.transport: #@UndefinedVariable
-        interface.manager.transport._sent_mails = []
 
 
 class BasicRobotTests(RobotTestCase):
@@ -77,17 +62,17 @@ class BasicRobotTests(RobotTestCase):
                     }
                 )
 
-            clear_messages()
+            self.clear_messages()
             self.start_robot(config=config,
                              robot_class=FailBot,
                              )
 
-            messages = get_messages()
+            messages = self.get_messages()
             assert messages
             assert url in messages[0]
             assert os.listdir(error_log)
 
-            clear_messages()
+            self.clear_messages()
 
             some_email = "nobody@ableton.invalid"
             config["error_handler"]["error.rcpt"] = some_email
@@ -96,7 +81,7 @@ class BasicRobotTests(RobotTestCase):
                              robot_class=FailBot,
                              )
 
-            messages = get_messages()
+            messages = self.get_messages()
             assert messages
             assert some_email in messages[0]
         finally:

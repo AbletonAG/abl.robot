@@ -1,8 +1,11 @@
 import unittest
-from configobj import ConfigObj
 import tempfile
 
+from configobj import ConfigObj
+from turbomail.control import interface
+
 #-------------------------------------------------------------------------------
+
 
 class RobotTestCase(unittest.TestCase):
     """
@@ -13,6 +16,21 @@ class RobotTestCase(unittest.TestCase):
     """
     The class to instantiate. Override in subclasses.
     """
+
+
+    @classmethod
+    def get_messages(cls):
+        if interface and interface.manager and interface.manager.transport: #@UndefinedVariable
+            # transport is only available after at least one mail has been sent
+            return interface.manager.transport.get_sent_mails() #@UndefinedVariable
+        else:
+            return []
+
+    @classmethod
+    def clear_messages(cls):
+        if interface and interface.manager and interface.manager.transport: #@UndefinedVariable
+            interface.manager.transport._sent_mails = []
+
 
     def start_robot(self,
                     opts={},

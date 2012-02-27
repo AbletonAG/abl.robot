@@ -5,13 +5,12 @@ TEST_REQUIREMENTS = ["nose"]
 
 setup(
     name = "abl.robot",
-    version = "0.1.2",
+    version = "0.1.3",
     author = "Diez B. Roggisch",
     author_email = "diez.roggisch@ableton.com",
     description = "The Ableton Robot Framework, for writing daemons or commandline tools, with powerful features for error handling and logging.",
     license="MIT",
     packages=find_packages(exclude=['tests']),
-    namespace_packages = ["abl"],
     install_requires = [
         "abl.util",
         "abl.vpath",

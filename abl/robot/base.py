@@ -323,20 +323,25 @@ class Robot(object):
     LOCK_TERMINATION_MESSAGE = """Terminating because the lock was active."""
 
 
-    def __init__(self, argv=None):
+    def __init__(self):
         self.parser = self.parser_with_default_options()
         self.add_options(self.parser)
+        self.logger = self.get_logger()
+
+
+
+    def setup(self, argv=None):
         if argv is None:
             argv = sys.argv
         self.opts, self.rest = self.parser.parse_args(argv)
-        self.logger = self.get_logger()
         self.config = self._locate_config(self.opts.config)
         self._setup_logging()
         self.error_handler = ErrorHandler(self, self.config.get('error_handler'))
+
+        mail_config = {}
         if "mail" in self.config:
-            configure(self.config["mail"].dict())
-        else:
-            configure({}) # use the defaults, *should* be sane!
+            mail_config = self.config["mail"].dict()
+        configure(mail_config)
 
 
     def parser_with_default_options(self):
@@ -390,6 +395,7 @@ class Robot(object):
     @classmethod
     def main(cls):
         robot = cls()
+        robot.setup()
         robot.run()
 
 

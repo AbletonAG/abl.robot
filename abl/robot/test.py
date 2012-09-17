@@ -117,7 +117,8 @@ class RobotTestCase(unittest.TestCase):
 
 
         robot_class = robot_class or self.ROBOT_CLASS
-        robot = robot_class(argv=cm_opts)
+        robot = robot_class()
+        robot.setup(argv=cm_opts)
         if commands is not None:
             for cmd in commands:
                 cmd(robot)

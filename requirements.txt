@@ -5,3 +5,5 @@ abl.util==0.1.12
 abl.vpath==0.6.11
 configobj==4.7.2
 decorator==3.4.0
+pika==0.9.12
+raven==3.3.3

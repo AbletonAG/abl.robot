@@ -1,5 +1,6 @@
-import unittest
-import tempfile
+from contextlib import contextmanager
+from tempfile import mktemp
+from unittest import TestCase
 
 from configobj import ConfigObj
 from turbomail.control import interface
@@ -7,7 +8,7 @@ from turbomail.control import interface
 #-------------------------------------------------------------------------------
 
 
-class RobotTestCase(unittest.TestCase):
+class RobotTestCase(TestCase):
     """
     Special baseclass to test Robots.
     """
@@ -88,7 +89,7 @@ class RobotTestCase(unittest.TestCase):
             if not "mail" in config:
                 config["mail"] = dict(transport="debug")
             cf = ConfigObj()
-            cf.filename = tempfile.mktemp("robottestconfig")
+            cf.filename = mktemp("robottestconfig")
             for key, value in config.iteritems():
                 cf[key] = value
             cf.write()
@@ -125,7 +126,7 @@ class RobotTestCase(unittest.TestCase):
 
 
         def _locking_context():
-            @contextlib.contextmanager
+            @contextmanager
             def nop():
                 yield
             return nop()

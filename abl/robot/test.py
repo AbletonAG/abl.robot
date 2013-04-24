@@ -40,7 +40,8 @@ class RobotTestCase(TestCase):
                     norun=False,
                     config=None,
                     commands=None,
-                    robot_class=None
+                    robot_class=None,
+                    argv=[]
                     ):
         """
         Create a robot-instance.
@@ -80,7 +81,7 @@ class RobotTestCase(TestCase):
         :type robot_class: None|class
         """
 
-        cm_opts = []
+        cm_opts = [] + argv
 
         if config is None:
             config = dict(mail=dict(transport="debug"))
@@ -116,8 +117,7 @@ class RobotTestCase(TestCase):
                     else:
                         cm_opts.extend([name, v])
 
-
-        robot_class = robot_class or self.ROBOT_CLASS
+        robot_class = robot_class if robot_class else self.ROBOT_CLASS
         robot = robot_class()
         robot.setup(argv=cm_opts)
         if commands is not None:

@@ -16,6 +16,7 @@ import unittest
 import contextlib
 import tempfile
 import subprocess
+from textwrap import dedent
 
 import shutil
 from urllib import urlencode
@@ -115,5 +116,43 @@ class BasicRobotTests(RobotTestCase):
             argv=["--raise-exceptions"]
             )
 
+    def test_configspec_matters(self):
 
+        the_configs = []
 
+        class ConfigBot(Robot):
+
+            AUTHOR = "dir@ableton.com"
+            EXCEPTION_MAILING = "dir@ableton.com"
+
+            NEEDS_CONFIG = True
+
+            CONFIGSPECS = dict(
+                configbot=dedent("""
+                [configbot]
+                a=string(default=foo)
+                b=integer(default=100)
+                c=integer
+                """
+                                 )
+                )
+
+            def work(self):
+                the_configs.append(self.config)
+
+        config = dict(
+            configbot=dict(
+                c="100",
+                )
+            )
+
+        self.start_robot(
+            config=config,
+            robot_class=ConfigBot,
+        )
+        assert the_configs
+        config = the_configs[0]
+        config = config["configbot"]
+        self.assertEqual(config["a"], "foo")
+        self.assertEqual(config["b"], 100)
+        self.assertEqual(config["c"], 100)

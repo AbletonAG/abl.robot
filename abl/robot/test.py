@@ -41,6 +41,7 @@ class RobotTestCase(TestCase):
                     config=None,
                     commands=None,
                     robot_class=None,
+                    raise_exceptions=True,
                     argv=[]
                     ):
         """
@@ -82,19 +83,27 @@ class RobotTestCase(TestCase):
         """
 
         cm_opts = [] + argv
+        if raise_exceptions:
+            cm_opts.append("--raise-exceptions")
 
         if config is None:
             config = dict(mail=dict(transport="debug"))
 
         if config is not None:
-            if not "mail" in config:
-                config["mail"] = dict(transport="debug")
-            cf = ConfigObj()
-            cf.filename = mktemp("robottestconfig")
-            for key, value in config.iteritems():
-                cf[key] = value
+            config_filename = mktemp("robottestconfig")
+            if isinstance(config, basestring):
+                cf = ConfigObj(config.split("\n"))
+            else:
+                cf = ConfigObj()
+                for key, value in config.iteritems():
+                    cf[key] = value
+
+            cf["mail"] = dict(transport="debug")
+
+            cf.filename = config_filename
             cf.write()
             cm_opts.append("--config=%s" % cf.filename)
+
         for key, value in opts.iteritems():
             if len(key) == 1:
                 name = "-" + key

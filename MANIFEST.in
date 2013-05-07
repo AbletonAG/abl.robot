@@ -1,0 +1,4 @@
+include *.txt
+include versioneer.py
+recursive-include abl *.py
+prune tests

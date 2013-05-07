@@ -40,7 +40,9 @@ class RobotTestCase(TestCase):
                     norun=False,
                     config=None,
                     commands=None,
-                    robot_class=None
+                    robot_class=None,
+                    raise_exceptions=True,
+                    argv=[]
                     ):
         """
         Create a robot-instance.
@@ -80,20 +82,28 @@ class RobotTestCase(TestCase):
         :type robot_class: None|class
         """
 
-        cm_opts = []
+        cm_opts = [] + argv
+        if raise_exceptions:
+            cm_opts.append("--raise-exceptions")
 
         if config is None:
             config = dict(mail=dict(transport="debug"))
 
         if config is not None:
-            if not "mail" in config:
-                config["mail"] = dict(transport="debug")
-            cf = ConfigObj()
-            cf.filename = mktemp("robottestconfig")
-            for key, value in config.iteritems():
-                cf[key] = value
+            config_filename = mktemp("robottestconfig")
+            if isinstance(config, basestring):
+                cf = ConfigObj(config.split("\n"))
+            else:
+                cf = ConfigObj()
+                for key, value in config.iteritems():
+                    cf[key] = value
+
+            cf["mail"] = dict(transport="debug")
+
+            cf.filename = config_filename
             cf.write()
             cm_opts.append("--config=%s" % cf.filename)
+
         for key, value in opts.iteritems():
             if len(key) == 1:
                 name = "-" + key
@@ -116,8 +126,7 @@ class RobotTestCase(TestCase):
                     else:
                         cm_opts.extend([name, v])
 
-
-        robot_class = robot_class or self.ROBOT_CLASS
+        robot_class = robot_class if robot_class else self.ROBOT_CLASS
         robot = robot_class()
         robot.setup(argv=cm_opts)
         if commands is not None:

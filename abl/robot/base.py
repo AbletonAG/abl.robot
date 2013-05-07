@@ -313,11 +313,6 @@ class Robot(object):
     This of course requires the email config being set up properly.
     """
 
-    RAISE_EXCEPTIONS = False
-    """
-    This can be used by tests to let exceptions percolate to the test-code.
-    """
-
     AUTHOR = "dir@ableton.com" # FIXME-dir: this must become robot@ableton.com or similar.
 
     LOCK_TERMINATION_MESSAGE = """Terminating because the lock was active."""
@@ -333,7 +328,9 @@ class Robot(object):
     def setup(self, argv=None):
         if argv is None:
             argv = sys.argv
+
         self.opts, self.rest = self.parser.parse_args(argv)
+        self.raise_exceptions = self.opts.raise_exceptions
         self.config = self._locate_config(self.opts.config)
         self._setup_logging()
         self.error_handler = ErrorHandler(self, self.config.get('error_handler'))
@@ -357,6 +354,13 @@ class Robot(object):
         g.add_option(
             "--logfile", default=None,
             help="Use the given logfile file"
+            )
+
+
+        g.add_option(
+            "--raise-exceptions", default=False,
+            action="store_true",
+            help="When given, don't handle errors but let them percolate to the commandline"
             )
 
         g.add_option(
@@ -416,7 +420,7 @@ class Robot(object):
         except (KeyboardInterrupt, SystemExit):
             pass
         except:
-            if self.RAISE_EXCEPTIONS:
+            if self.raise_exceptions:
                 raise
             self.error_handler.report_exception()
 

@@ -16,6 +16,7 @@ import contextlib
 import inspect
 import logging
 import optparse
+import tempfile
 from time import time
 from textwrap import dedent
 from socket import error as socket_error
@@ -292,7 +293,7 @@ class Robot(object):
     a section defined in the baseclasses.
     """
 
-    EMERGENCY_LOG = "/tmp/robot_emergency.log"
+    EMERGENCY_LOG = os.path.join(tempfile.gettempdir(), 'robot_emergency.log')
     """
     The emergency log name. This is used and configured as DEBUG when
     no configuration is found, so that we get output in all cases.

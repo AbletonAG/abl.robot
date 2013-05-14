@@ -1,7 +1,7 @@
 Genshi==0.5.1
 TurboMail==3.0.3
 abl.errorreporter==0.3.1
-abl.util==0.1.11
+abl.util>=0.1.11
 abl.vpath==0.6.8
 configobj==4.7.2
 decorator==3.4.0

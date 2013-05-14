@@ -61,6 +61,7 @@ class BasicRobotTests(RobotTestCase):
             self.start_robot(
                 config=config,
                 robot_class=FailBot,
+                raise_exceptions=False
                 )
 
             messages = self.get_messages()
@@ -69,12 +70,14 @@ class BasicRobotTests(RobotTestCase):
             assert os.listdir(error_log)
 
             self.clear_messages()
+            shutil.rmtree(error_log)
 
             some_email = "nobody@ableton.invalid"
             config["error_handler"]["error.rcpt"] = some_email
 
             self.start_robot(config=config,
                              robot_class=FailBot,
+                             raise_exceptions=False
                              )
 
             messages = self.get_messages()

@@ -133,6 +133,9 @@ class RobotTestCase(TestCase):
             for cmd in commands:
                 cmd(robot)
 
+        # reset PINGBACK_URL so the tests don't have to rely on external services
+        robot.PINGBACK_URL = None
+
 
         def _locking_context():
             @contextmanager

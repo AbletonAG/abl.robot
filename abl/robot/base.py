@@ -253,12 +253,6 @@ class Robot(object):
     will be used.
     """
 
-    PINGBACK_URL = None
-    """
-    If given the robot will ping this URL after a succesful run.
-    The name of the robot will be interpolated as `name`.
-    """
-
     CONFIGSPECS = dict(
         locking=dedent("""
         [locking]

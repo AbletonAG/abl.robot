@@ -284,7 +284,11 @@ class Robot(object):
         error.sender = string
         error.prefix = string(default='[Robot Stumbled]')
         mail.on = boolean(default=False)
-        """)
+        """),
+        pingback=dedent("""
+        [pingback]
+        url = string(default='')
+        """),
         )
     """
     Used to validate the configuration options.
@@ -421,12 +425,13 @@ class Robot(object):
         try:
             with self._locking_context():
                 self.work()
-            if self.PINGBACK_URL:
+            pingback_url = self.config["pingback"]["url"]
+            if pingback_url:
                 try:
-                    res = urlopen(self.PINGBACK_URL % dict(name=self.name))
+                    res = urlopen(pingback_url % self.name)
                     res.read()
                 except:
-                    self.logger.exception("Couldn't ping %s." % self.PINGBACK_URL)
+                    self.logger.exception("Couldn't ping %s." % pingback_url)
         except LockFileObtainException:
             self.logger.info(self.LOCK_TERMINATION_MESSAGE)
         except LockFileCreationException:

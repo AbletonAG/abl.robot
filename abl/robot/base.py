@@ -252,6 +252,12 @@ class Robot(object):
     will be used.
     """
 
+    PINGBACK_URL = None
+    """
+    If given the robot will ping this URL after a succesful run.
+    The name of the robot will be interpolated as `name`.
+    """
+
     CONFIGSPECS = dict(
         locking=dedent("""
         [locking]
@@ -414,6 +420,12 @@ class Robot(object):
         try:
             with self._locking_context():
                 self.work()
+            if self.PINGBACK_URL:
+                try:
+                    res = urlopen(self.PINGBACK_URL % dict(name=self.name))
+                    res.read()
+                except:
+                    self.logger.error("Couldn't ping %s." % self.PINGBACK_URL)
         except LockFileObtainException:
             self.logger.info(self.LOCK_TERMINATION_MESSAGE)
         except LockFileCreationException:

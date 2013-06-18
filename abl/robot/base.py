@@ -11,6 +11,7 @@ import sys
 import os
 import pprint
 import subprocess
+from urllib import urlopen
 from cStringIO import StringIO
 import contextlib
 import inspect
@@ -277,7 +278,11 @@ class Robot(object):
         error.sender = string
         error.prefix = string(default='[Robot Stumbled]')
         mail.on = boolean(default=False)
-        """)
+        """),
+        pingback=dedent("""
+        [pingback]
+        url = string(default='')
+        """),
         )
     """
     Used to validate the configuration options.
@@ -414,6 +419,13 @@ class Robot(object):
         try:
             with self._locking_context():
                 self.work()
+            pingback_url = self.config["pingback"]["url"]
+            if pingback_url:
+                try:
+                    res = urlopen(pingback_url % self.name)
+                    res.read()
+                except:
+                    self.logger.exception("Couldn't ping %s." % pingback_url)
         except LockFileObtainException:
             self.logger.info(self.LOCK_TERMINATION_MESSAGE)
         except LockFileCreationException:

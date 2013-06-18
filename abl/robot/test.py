@@ -133,7 +133,6 @@ class RobotTestCase(TestCase):
             for cmd in commands:
                 cmd(robot)
 
-
         def _locking_context():
             @contextmanager
             def nop():

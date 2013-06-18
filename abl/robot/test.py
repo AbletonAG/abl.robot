@@ -87,7 +87,8 @@ class RobotTestCase(TestCase):
             cm_opts.append("--raise-exceptions")
 
         if config is None:
-            config = dict(mail=dict(transport="debug"))
+            config = dict(mail=dict(transport="debug"),
+                          pingback=dict(url=""))
 
         if config is not None:
             config_filename = mktemp("robottestconfig")
@@ -99,6 +100,7 @@ class RobotTestCase(TestCase):
                     cf[key] = value
 
             cf["mail"] = dict(transport="debug")
+            cf["pingback"] = dict(url="")
 
             cf.filename = config_filename
             cf.write()

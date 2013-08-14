@@ -362,6 +362,10 @@ class Robot(object):
             help="Use the given logfile file"
             )
 
+        g.add_option(
+            "--lockfile", default=None,
+            help="Use the given lock file."
+            )
 
         g.add_option(
             "--raise-exceptions", default=False,
@@ -489,12 +493,16 @@ class Robot(object):
         """
 
         c = self.config
-        if "locking" in c and c["locking"].get("filename", None):
+        if ("locking" in c and c["locking"].get("filename", None)) or self.opts.lockfile is not None:
             fail_on_lock = False
             if c["locking"].get("terminate_when_locked", False):
                 fail_on_lock = c["locking"].as_bool("terminate_when_locked")
+            if self.opts.lockfile is not None:
+                lock_file = self.opts.lockfile
+            else:
+                lock_file = c["locking"]["filename"]
             return LockFile(
-                c["locking"]["filename"],
+                lock_file,
                 cleanup=True,
                 fail_on_lock=fail_on_lock
                 )

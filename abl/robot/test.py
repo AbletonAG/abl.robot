@@ -3,6 +3,7 @@ from tempfile import mktemp
 from unittest import TestCase
 
 from configobj import ConfigObj
+import threading
 from turbomail.control import interface
 
 #-------------------------------------------------------------------------------

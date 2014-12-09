@@ -9,7 +9,6 @@ __docformat__ = "restructuredtext en"
 
 import sys
 import os
-import pprint
 import subprocess
 from urllib import urlopen
 from cStringIO import StringIO
@@ -262,7 +261,7 @@ class Robot(object):
         mail=dedent("""
         [mail]
         transport = option(smtp, debug, default=smtp)
-        smtp.server = string(default=mail.ableton.net)
+        smtp.server = string(default=localhost)
         """),
         logging=dedent("""
         [logging]
@@ -319,7 +318,7 @@ class Robot(object):
     This of course requires the email config being set up properly.
     """
 
-    AUTHOR = "dir@ableton.com" # FIXME-dir: this must become robot@ableton.com or similar.
+    AUTHOR = "robot@localhost"
 
     LOCK_TERMINATION_MESSAGE = """Terminating because the lock was active."""
 

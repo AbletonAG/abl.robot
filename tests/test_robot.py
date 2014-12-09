@@ -7,25 +7,13 @@ from __future__ import with_statement
 __docformat__ = "restructuredtext en"
 
 import os
-import sys
-import time
-import threading
-import logging
-from functools import partial
-import unittest
-import contextlib
 import tempfile
-import subprocess
 from textwrap import dedent
 
 import shutil
-from urllib import urlencode
 
 from abl.robot import Robot
 from abl.robot.test import RobotTestCase
-
-
-from abl.vpath.base import URI
 
 
 class BasicRobotTests(RobotTestCase):
@@ -35,8 +23,8 @@ class BasicRobotTests(RobotTestCase):
 
         class FailBot(Robot):
 
-            AUTHOR = "dir@ableton.com"
-            EXCEPTION_MAILING = "dir@ableton.com"
+            AUTHOR = "robot@example.com"
+            EXCEPTION_MAILING = "robot@example.com"
 
             def work(self):
                 raise Exception("Oh lord forgive me, I'm such an epic fail!")
@@ -94,8 +82,8 @@ class BasicRobotTests(RobotTestCase):
 
         class RaiseBot(Robot):
 
-            AUTHOR = "dir@ableton.com"
-            EXCEPTION_MAILING = "dir@ableton.com"
+            AUTHOR = "robot@example.com"
+            EXCEPTION_MAILING = "robot@example.com"
 
             def work(self):
                 raise Foo
@@ -125,8 +113,8 @@ class BasicRobotTests(RobotTestCase):
 
         class ConfigBot(Robot):
 
-            AUTHOR = "dir@ableton.com"
-            EXCEPTION_MAILING = "dir@ableton.com"
+            AUTHOR = "robot@example.com"
+            EXCEPTION_MAILING = "robot@example.com"
 
             NEEDS_CONFIG = True
 

@@ -87,7 +87,7 @@ def configure(conf):
     default_conf = {
         "manager" :             "immediate",
         "transport" :           "smtp",
-        "smtp.server" :         "mail.ableton.net",
+        "smtp.server" :         "localhost",
         "message.encoding" :    "utf-8",
         "utf8qp.on" :           True,
         }

@@ -3,6 +3,12 @@
 Provides configuration management and error reporting infrastructure
 for cronjobs and asynchronous services.
 
+## Running tests
+
+Tests can be run via nose (`pip install nose`):
+
+    nosetests
+
 ## How to release a new version
 
 This package uses versioneer to manage version numbers.

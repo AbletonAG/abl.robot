@@ -87,7 +87,7 @@ def configure(conf):
     default_conf = {
         "manager" :             "immediate",
         "transport" :           "smtp",
-        "smtp.server" :         "localhost",
+        "smtp.server" :         "127.0.0.1",
         "message.encoding" :    "utf-8",
         "utf8qp.on" :           True,
         }

@@ -261,7 +261,7 @@ class Robot(object):
         mail=dedent("""
         [mail]
         transport = option(smtp, debug, default=smtp)
-        smtp.server = string(default=localhost)
+        smtp.server = string(default='127.0.0.1')
         """),
         logging=dedent("""
         [logging]

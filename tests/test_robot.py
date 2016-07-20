@@ -8,6 +8,7 @@ __docformat__ = "restructuredtext en"
 
 import os
 import tempfile
+from logging import DEBUG,  Handler
 from textwrap import dedent
 
 import shutil
@@ -20,6 +21,15 @@ class BasicRobotTests(RobotTestCase):
 
 
     def test_exception_mailing(self):
+
+        class FailHandler(Handler):
+            def __init__(self, *args, **kwargs):
+                super(FailHandler, self).__init__(*args, **kwargs)
+                self.records = []
+
+            def emit(self, record):
+                self.records.append(record)
+
 
         class FailBot(Robot):
 
@@ -63,14 +73,20 @@ class BasicRobotTests(RobotTestCase):
             some_email = "nobody@ableton.invalid"
             config["error_handler"]["error.rcpt"] = some_email
 
-            self.start_robot(config=config,
-                             robot_class=FailBot,
-                             raise_exceptions=False
-                             )
+            robot = self.start_robot(config=config,
+                                     robot_class=FailBot,
+                                     raise_exceptions=False,
+                                     norun=True,
+                                    )
+            hdlr = FailHandler()
+            robot.logger.addHandler(hdlr)
+            robot.run()
 
             messages = self.get_messages()
             assert messages
             assert some_email in messages[0]
+            self.assertEqual(hdlr.records[0].msg, 'An unhandled exception occured.')
+
         finally:
             shutil.rmtree(error_log)
 

@@ -439,6 +439,7 @@ class Robot(object):
             if self.raise_exceptions:
                 raise
             self.error_handler.report_exception()
+            self.logger.exception("An unhandled exception occured.")
 
 
     def sendmail(self, subject, to, text=None, attachments=()):

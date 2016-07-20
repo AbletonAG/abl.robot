@@ -8,7 +8,7 @@ __docformat__ = "restructuredtext en"
 
 import os
 import tempfile
-from logging import DEBUG,  Handler
+from logging import Handler
 from textwrap import dedent
 
 import shutil

@@ -436,10 +436,10 @@ class Robot(object):
         except (KeyboardInterrupt, SystemExit):
             pass
         except:
+            self.logger.exception("An unhandled exception occured.")
             if self.raise_exceptions:
                 raise
             self.error_handler.report_exception()
-            self.logger.exception("An unhandled exception occured.")
 
 
     def sendmail(self, subject, to, text=None, attachments=()):
